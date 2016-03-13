@@ -1,0 +1,13 @@
+{
+  "name": "ml-tcp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "supportIC":[ "mt7687" ],
+  "src": ["./src/ml-tcp.c"],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "iamblue",
+  "license": "ISC"
+}
