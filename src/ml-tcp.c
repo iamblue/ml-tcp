@@ -19,10 +19,11 @@
 #define TRX_PACKET_COUNT 3000
 
 char rcv_buf_old[100] = {0};
+int tcpClientSocket;
+int ret;
 
 DELCARE_HANDLER(tcpClient) {
-  int s;
-  int ret;
+  /* ip */
   int ip_req_sz = jerry_api_string_to_char_buffer(args_p[0].v_string, NULL, 0);
   ip_req_sz *= -1;
   char ip_buffer [ip_req_sz + 1];
@@ -31,7 +32,7 @@ DELCARE_HANDLER(tcpClient) {
 
   printf("%s\n", ip_buffer);
 
-  char send_data[] = "DovS4gPM,pS7RkWVGCRP1xv95,0";
+  // char send_data[] = "DovS4gPM,pS7RkWVGCRP1xv95,0";
 
   struct sockaddr_in addr;
   int count = 0;
@@ -43,30 +44,30 @@ DELCARE_HANDLER(tcpClient) {
   addr.sin_port = htons((int)args_p[1].v_float32);
   addr.sin_addr.s_addr =inet_addr(ip_buffer);
 
-  s = lwip_socket(AF_INET, SOCK_STREAM, 0);
+  tcpClientSocket = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
-  if (s < 0) {
+  if (tcpClientSocket < 0) {
     printf("tcp client create fail\n");
     goto idle;
   }
 
-  ret = lwip_connect(s, (struct sockaddr *)&addr, sizeof(addr));
+  ret = lwip_connect(tcpClientSocket, (struct sockaddr *)&addr, sizeof(addr));
 
   if (ret < 0) {
-    lwip_close(s);
+    lwip_close(tcpClientSocket);
     printf("tcp client connect fail\n");
     goto idle;
   }
 
   for (;;) {
     char rcv_buf[100] = {0};
-    if (0 == count) {
-      ret = lwip_write(s, send_data, sizeof(send_data));
-      printf("tcp client write:ret = %s\n", ret);
-    }
-    printf("tcp client waiting for data...\n");
+    // if (0 == count) {
+    //   ret = lwip_write(s, send_data, sizeof(send_data));
+    //   printf("tcp client write:ret = %s\n", ret);
+    // }
+    // printf("tcp client waiting for data...\n");
     rcv_len = 0;
-    rlen = lwip_recv(s, &rcv_buf[rcv_len], sizeof(rcv_buf) - 1 - rcv_len, 0);
+    rlen = lwip_recv(tcpClientSocket, &rcv_buf[rcv_len], sizeof(rcv_buf) - 1 - rcv_len, 0);
     rcv_len += rlen;
 
     printf("rcv_buf: %s\n", rcv_buf);
@@ -80,11 +81,6 @@ DELCARE_HANDLER(tcpClient) {
       strcpy(*rcv_buf_old, rcv_buf);
       jerry_api_release_value(&params);
     }
-
-    // if (1000 == count) {
-    //   ret = lwip_close(s);
-    // }
-
     count++;
     vTaskDelay(1000);
   }
@@ -171,7 +167,7 @@ done:
 }
 
 DELCARE_HANDLER(tcpClose) {
-  // lwip_close(s);
+  lwip_close(tcpClientSocket);
   return true;
 }
 
@@ -181,13 +177,7 @@ DELCARE_HANDLER(tcpSend) {
   char data_buffer [data_req_sz + 1];
   data_req_sz = jerry_api_string_to_char_buffer (args_p[0].v_string, (jerry_api_char_t *) data_buffer, data_req_sz);
   data_buffer[data_req_sz] = '\0';
-
-  // char send_data[100];
-
-  // ssize_t data_req_sz = jerry_api_string_to_char_buffer (args_p[0].v_string, (jerry_api_char_t *) send_data, 128);
-  // send_data[data_req_sz] = '\0';
-
-  // lwip_write(s, data_buffer, sizeof(data_buffer));
+  lwip_write(tcpClientSocket, data_buffer, sizeof(data_buffer));
   return true;
 }
 
