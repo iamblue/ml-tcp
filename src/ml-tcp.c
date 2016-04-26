@@ -22,7 +22,7 @@ char rcv_buf_old[100] = {0};
 int tcpClientSocket;
 int ret;
 
-DELCARE_HANDLER(tcpClient) {
+DELCARE_HANDLER(__tcpClient) {
   /* ip */
   int ip_req_sz = jerry_api_string_to_char_buffer(args_p[0].v_string, NULL, 0);
   ip_req_sz *= -1;
@@ -96,7 +96,7 @@ idle:
   return true;
 }
 
-DELCARE_HANDLER(tcpServer) {
+DELCARE_HANDLER(__tcpServer) {
   int s;
   int c;
   int ret;
@@ -166,12 +166,12 @@ done:
   return true;
 }
 
-DELCARE_HANDLER(tcpClose) {
+DELCARE_HANDLER(__tcpClose) {
   lwip_close(tcpClientSocket);
   return true;
 }
 
-DELCARE_HANDLER(tcpSend) {
+DELCARE_HANDLER(__tcpSend) {
   int data_req_sz = jerry_api_string_to_char_buffer(args_p[0].v_string, NULL, 0);
   data_req_sz *= -1;
   char data_buffer [data_req_sz + 1];
@@ -182,8 +182,8 @@ DELCARE_HANDLER(tcpSend) {
 }
 
 void ml_tcp_init(void) {
-  REGISTER_HANDLER(tcpServer);
-  REGISTER_HANDLER(tcpClient);
-  REGISTER_HANDLER(tcpClose);
-  REGISTER_HANDLER(tcpSend);
+  REGISTER_HANDLER(__tcpServer);
+  REGISTER_HANDLER(__tcpClient);
+  REGISTER_HANDLER(__tcpClose);
+  REGISTER_HANDLER(__tcpSend);
 }
