@@ -1,10 +1,14 @@
 {
   "name": "ml-tcp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The tcp package for Microlattice.js",
   "main": "index.js",
-  "supportIC":[ "mt7687" ],
-  "src": ["./src/ml-tcp.c"],
+  "supportIC": [
+    "mt7687"
+  ],
+  "src": [
+    "./src/ml-tcp.c"
+  ],
   "scripts": {
     "test": ""
   },
