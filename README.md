@@ -1,6 +1,5 @@
 # ml-tcp
 
-
 ## API
 
 * tcpClient
@@ -25,5 +24,4 @@
     } else {
       __gpioWrite(35,'OUTPUT', 8, 0);
     }
-    // match , split ,regex not work
   });
