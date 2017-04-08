@@ -4,14 +4,16 @@
 #include "jerry-api.h"
 
 #include "os.h"
-#include "network_init.h"
-#include "wifi_api.h"
 #include "lwip/netif.h"
 #include "lwip/tcpip.h"
 #include "lwip/sockets.h"
 #include "ethernetif.h"
 #include "lwip/sockets.h"
 #include "netif/etharp.h"
+#include "timers.h"
+#include "os.h"
+#include "httpclient.h"
+#include "mcs.h"
 #include "microlattice.h"
 
 #define TRX_PACKET_COUNT 3000
@@ -27,8 +29,6 @@ DELCARE_HANDLER(__tcpClient) {
   jerry_string_to_char_buffer (args_p[0], ip_buffer, ip_req_sz);
   ip_buffer[ip_req_sz] = '\0';
 
-  printf("0: %s\n", ip_buffer);
-
   struct sockaddr_in addr;
   int count = 0;
   int rcv_len, rlen;
@@ -38,7 +38,6 @@ DELCARE_HANDLER(__tcpClient) {
   addr.sin_len = sizeof(addr);
   addr.sin_family = AF_INET;
   addr.sin_port = lwip_htons((int) jerry_get_number_value (args_p[1]));
-  printf("1: %s\n", ip_buffer);
   addr.sin_addr.s_addr = inet_addr(ip_buffer);
   // inet_addr_from_ipaddr(&addr.sin_addr, ip);
 
