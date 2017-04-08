@@ -1,6 +1,6 @@
 {
   "name": "ml-tcp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The tcp package for Microlattice.js",
   "main": "index.js",
   "supportIC": [
